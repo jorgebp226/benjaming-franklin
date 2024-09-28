@@ -1,24 +1,30 @@
-import logo from './logo.svg';
+// src/App.js
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import Calendar from './components/Calendar';
+import ProgressChart from './components/ProgressChart';
 import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="app-container">
+        <nav>
+          <ul>
+            <li>
+              <Link to="/">Calendario</Link>
+            </li>
+            <li>
+              <Link to="/progress-chart">Gráfico de Progreso</Link>
+            </li>
+          </ul>
+        </nav>
+        <Routes>
+          <Route path="/" element={<Calendar />} />
+          <Route path="/progress-chart" element={<ProgressChart />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 

@@ -1,0 +1,27 @@
+/* src/components/ProgressChart.css */
+.progress-chart-container {
+    padding: 20px;
+    max-width: 1000px;
+    margin: auto;
+  }
+  
+  .filters {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .date-picker label,
+  .virtue-selector label {
+    font-weight: bold;
+  }
+  
+  .date-picker input {
+    margin-right: 10px;
+  }
+  
+  .virtue-selector {
+    display: flex;
+    flex-direction: column;
+  }
+  
