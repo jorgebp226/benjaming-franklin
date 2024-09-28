@@ -31,8 +31,8 @@ const Calendar = () => {
 
   const loadRecords = async () => {
     const data = await getVirtues();
-    if (data.length === 0) {
-      // Inicializar virtudes en la base de datos si no existen
+    console.log(data);  // Log to check if data is correct
+    if (!data || data.length === 0) {
       for (const virtue of allVirtues) {
         await updateVirtueRecords(virtue.id, {});
       }
@@ -44,7 +44,6 @@ const Calendar = () => {
       setRecords(recordsData);
     }
   };
-
   const toggleDescription = (virtueId) => {
     setShowDescription((prevState) => ({
       ...prevState,

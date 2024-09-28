@@ -2,6 +2,9 @@ import { GraphQLAPI as API, graphqlOperation } from '@aws-amplify/api-graphql';
 import { listVirtues } from './graphql/queries';
 import { updateVirtue } from './graphql/mutations';
 
+const response = await API.graphql(graphqlOperation(listVirtues));
+console.log(response);  // Add this to inspect the response
+
 // Obtener todas las virtudes
 export const getVirtues = async () => {
   try {
