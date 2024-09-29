@@ -1,4 +1,4 @@
-import { API, graphqlOperation } from '@aws-amplify/api-graphql';
+import { API, graphqlOperation } from 'aws-amplify';
 import { listVirtues } from './graphql/queries';
 import { updateVirtue, createVirtue } from './graphql/mutations';
 import { virtues as allVirtues } from './utils/virtues'; // Importa las virtudes locales
