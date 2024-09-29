@@ -29,7 +29,9 @@ export const updateVirtueRecords = async (virtueId, weekRecords) => {
       throw new Error('El registro semanal (weekRecords) es inválido o está vacío.');
     }
 
-    // Aquí continúas con la mutación una vez que estás seguro de que los valores son válidos
+    // Log para depurar el contenido de la mutación
+    console.log('Mutación updateVirtue:', mutations.updateVirtue);
+
     console.log('Enviando a updateVirtue:', virtueId, weekRecords); // Log para depurar los datos enviados
 
     const response = await API.graphql(graphqlOperation(mutations.updateVirtue, {
