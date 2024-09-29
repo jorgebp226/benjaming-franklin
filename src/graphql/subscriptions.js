@@ -1,36 +1,39 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const onCreateTodo = /* GraphQL */ `
-  subscription OnCreateTodo($filter: ModelSubscriptionTodoFilterInput) {
-    onCreateTodo(filter: $filter) {
+export const onCreateVirtue = /* GraphQL */ `
+  subscription OnCreateVirtue($filter: ModelSubscriptionVirtueFilterInput) {
+    onCreateVirtue(filter: $filter) {
       id
       name
       description
+      weekRecords
       createdAt
       updatedAt
       __typename
     }
   }
 `;
-export const onUpdateTodo = /* GraphQL */ `
-  subscription OnUpdateTodo($filter: ModelSubscriptionTodoFilterInput) {
-    onUpdateTodo(filter: $filter) {
+export const onUpdateVirtue = /* GraphQL */ `
+  subscription OnUpdateVirtue($filter: ModelSubscriptionVirtueFilterInput) {
+    onUpdateVirtue(filter: $filter) {
       id
       name
       description
+      weekRecords
       createdAt
       updatedAt
       __typename
     }
   }
 `;
-export const onDeleteTodo = /* GraphQL */ `
-  subscription OnDeleteTodo($filter: ModelSubscriptionTodoFilterInput) {
-    onDeleteTodo(filter: $filter) {
+export const onDeleteVirtue = /* GraphQL */ `
+  subscription OnDeleteVirtue($filter: ModelSubscriptionVirtueFilterInput) {
+    onDeleteVirtue(filter: $filter) {
       id
       name
       description
+      weekRecords
       createdAt
       updatedAt
       __typename

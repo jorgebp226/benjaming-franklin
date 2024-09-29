@@ -1,39 +1,19 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const getTodo = /* GraphQL */ `
-  query GetTodo($id: ID!) {
-    getTodo(id: $id) {
+export const getVirtue = /* GraphQL */ `
+  query GetVirtue($id: ID!) {
+    getVirtue(id: $id) {
       id
       name
       description
+      weekRecords
       createdAt
       updatedAt
       __typename
     }
   }
 `;
-export const listTodos = /* GraphQL */ `
-  query ListTodos(
-    $filter: ModelTodoFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listTodos(filter: $filter, limit: $limit, nextToken: $nextToken) {
-      items {
-        id
-        name
-        description
-        createdAt
-        updatedAt
-        __typename
-      }
-      nextToken
-      __typename
-    }
-  }
-`;
-
 export const listVirtues = /* GraphQL */ `
   query ListVirtues(
     $filter: ModelVirtueFilterInput
@@ -44,6 +24,7 @@ export const listVirtues = /* GraphQL */ `
       items {
         id
         name
+        description
         weekRecords
         createdAt
         updatedAt

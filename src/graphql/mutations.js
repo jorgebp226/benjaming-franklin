@@ -1,52 +1,22 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const createTodo = /* GraphQL */ `
-  mutation CreateTodo(
-    $input: CreateTodoInput!
-    $condition: ModelTodoConditionInput
+export const createVirtue = /* GraphQL */ `
+  mutation CreateVirtue(
+    $input: CreateVirtueInput!
+    $condition: ModelVirtueConditionInput
   ) {
-    createTodo(input: $input, condition: $condition) {
+    createVirtue(input: $input, condition: $condition) {
       id
       name
       description
+      weekRecords
       createdAt
       updatedAt
       __typename
     }
   }
 `;
-export const updateTodo = /* GraphQL */ `
-  mutation UpdateTodo(
-    $input: UpdateTodoInput!
-    $condition: ModelTodoConditionInput
-  ) {
-    updateTodo(input: $input, condition: $condition) {
-      id
-      name
-      description
-      createdAt
-      updatedAt
-      __typename
-    }
-  }
-`;
-export const deleteTodo = /* GraphQL */ `
-  mutation DeleteTodo(
-    $input: DeleteTodoInput!
-    $condition: ModelTodoConditionInput
-  ) {
-    deleteTodo(input: $input, condition: $condition) {
-      id
-      name
-      description
-      createdAt
-      updatedAt
-      __typename
-    }
-  }
-`;
-
 export const updateVirtue = /* GraphQL */ `
   mutation UpdateVirtue(
     $input: UpdateVirtueInput!
@@ -55,6 +25,23 @@ export const updateVirtue = /* GraphQL */ `
     updateVirtue(input: $input, condition: $condition) {
       id
       name
+      description
+      weekRecords
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const deleteVirtue = /* GraphQL */ `
+  mutation DeleteVirtue(
+    $input: DeleteVirtueInput!
+    $condition: ModelVirtueConditionInput
+  ) {
+    deleteVirtue(input: $input, condition: $condition) {
+      id
+      name
+      description
       weekRecords
       createdAt
       updatedAt
