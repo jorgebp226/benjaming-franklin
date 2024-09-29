@@ -1,7 +1,7 @@
 import { API, graphqlOperation } from '@aws-amplify/api-graphql';
 import { listVirtues } from './graphql/queries';
 import { updateVirtue, createVirtue } from './graphql/mutations';
-import { virtues as allVirtues } from './virtues'; // Importa las virtudes locales
+import { virtues as allVirtues } from './utils/virtues'; // Importa las virtudes locales
 
 // Obtener todas las virtudes desde DynamoDB
 export const getVirtues = async () => {
