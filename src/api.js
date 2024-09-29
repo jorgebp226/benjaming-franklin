@@ -3,7 +3,7 @@ import { listVirtues } from './graphql/queries';
 import { updateVirtue } from './graphql/mutations';
 
 const response = await API.graphql(graphqlOperation(listVirtues));
-console.log(response);  // Add this to inspect the response
+console.log('Respuesta completa de GraphQL:', response);
 
 // Obtener todas las virtudes
 export const getVirtues = async () => {
