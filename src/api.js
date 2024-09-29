@@ -20,12 +20,26 @@ export const getVirtues = async () => {
 // Actualizar los registros de una virtud en DynamoDB
 export const updateVirtueRecords = async (virtueId, weekRecords) => {
   try {
+    // Validar que los parámetros no sean undefined o null
+    if (!virtueId || typeof virtueId !== 'string') {
+      throw new Error('El ID de la virtud es inválido o está vacío.');
+    }
+
+    if (!weekRecords || typeof weekRecords !== 'object') {
+      throw new Error('El registro semanal (weekRecords) es inválido o está vacío.');
+    }
+
+    // Aquí continúas con la mutación una vez que estás seguro de que los valores son válidos
+    console.log('Enviando a updateVirtue:', virtueId, weekRecords); // Log para depurar los datos enviados
+
     const response = await API.graphql(graphqlOperation(mutations.updateVirtue, {
       input: {
         id: virtueId,
         weekRecords
       }
     }));
+
+    console.log('Respuesta de updateVirtue:', response); // Log para revisar la respuesta
     return response.data.updateVirtue;
   } catch (error) {
     console.error("Error actualizando los registros de la virtud:", error.errors ? error.errors : error);
