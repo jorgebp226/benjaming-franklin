@@ -74,3 +74,22 @@ export const getWeekNumber = (date) => {
   const startOfYear = new Date(date.getFullYear(), 0, 1);
   return Math.ceil((date - startOfYear) / (7 * 24 * 60 * 60 * 1000));
 };
+
+
+export const uploadVirtues = async () => {
+  try {
+    for (const virtue of allVirtues) {
+      const response = await API.graphql(graphqlOperation(mutations.createVirtue, {
+        input: {
+          id: virtue.id,
+          name: virtue.name,
+          description: virtue.description,
+          weekRecords: {},
+        }
+      }));
+      console.log(`Virtud subida: ${virtue.name}`, response);
+    }
+  } catch (error) {
+    console.error('Error subiendo las virtudes:', error.message || error);
+  }
+};
