@@ -17,6 +17,36 @@ export const getVirtues = async () => {
   }
 };
 
+// Renombrada a 'updateVirtueRecords'
+export const updateVirtueRecords = async (virtueId, date, status, targetVirtueId) => {
+  try {
+    const input = {
+      virtueId,
+      date,
+      status,
+      targetVirtueId
+    };
+
+    const existingRecord = await API.graphql(graphqlOperation(queries.getWeekRecords, {
+      virtueId,
+      startDate: date,
+      endDate: date
+    }));
+
+    if (existingRecord.data.getWeekRecords.length > 0) {
+      input.id = existingRecord.data.getWeekRecords[0].id;
+      await API.graphql(graphqlOperation(mutations.updateVirtueRecord, { input }));
+    } else {
+      await API.graphql(graphqlOperation(mutations.createVirtueRecord, { input }));
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error actualizando el registro de la virtud:", error);
+    throw error;
+  }
+};
+
 export const getWeekRecords = async (virtueId, startDate, endDate) => {
   try {
     const response = await API.graphql(graphqlOperation(queries.getWeekRecords, {
