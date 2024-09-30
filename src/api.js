@@ -1,69 +1,76 @@
 import { GraphQLAPI as API, graphqlOperation } from '@aws-amplify/api-graphql';
+//import { API, graphqlOperation } from 'aws-amplify';
 import * as mutations from './graphql/mutations';
 import * as queries from './graphql/queries';
 import { virtues as allVirtues } from './utils/virtues';
 
-// Obtener todas las virtudes desde DynamoDB
-export const getVirtues = async () => {
+export const getWeekRecords = async (virtueId, startDate, endDate) => {
   try {
-    const response = await API.graphql(graphqlOperation(queries.listVirtues));
-    if (!response || !response.data || !response.data.listVirtues) {
-      throw new Error("No se recibieron datos de GraphQL.");
-    }
-    return response.data.listVirtues.items;
+    const response = await API.graphql(graphqlOperation(queries.getWeekRecords, {
+      virtueId,
+      startDate,
+      endDate
+    }));
+    return response.data.getWeekRecords;
   } catch (error) {
-    console.error("Error al obtener las virtudes:", error.errors ? error.errors : error);
+    console.error("Error al obtener los registros de la semana:", error);
     return [];
   }
 };
 
-// Actualizar los registros de una virtud en DynamoDB
-export const updateVirtueRecords = async (virtueId, weekRecords) => {
+export const updateVirtueRecord = async (virtueId, date, status, targetVirtueId) => {
   try {
-    // Validar que los parámetros no sean undefined o null
-    if (!virtueId || typeof virtueId !== 'string') {
-      throw new Error('El ID de la virtud es inválido o está vacío.');
-    }
+    const input = {
+      virtueId,
+      date,
+      status,
+      targetVirtueId
+    };
 
-    if (!weekRecords || typeof weekRecords !== 'object') {
-      throw new Error('El registro semanal (weekRecords) es inválido o está vacío.');
-    }
-
-    // Log para depurar el contenido de la mutación
-    console.log('Mutación updateVirtue:', mutations.updateVirtue);
-
-    console.log('Enviando a updateVirtue:', virtueId, weekRecords); // Log para depurar los datos enviados
-
-    const response = await API.graphql(graphqlOperation(mutations.updateVirtue, {
-      input: {
-        id: virtueId,
-        weekRecords
-      }
+    const existingRecord = await API.graphql(graphqlOperation(queries.getWeekRecords, {
+      virtueId,
+      startDate: date,
+      endDate: date
     }));
 
-    console.log('Respuesta de updateVirtue:', response); // Log para revisar la respuesta
-    return response.data.updateVirtue;
+    if (existingRecord.data.getWeekRecords.length > 0) {
+      input.id = existingRecord.data.getWeekRecords[0].id;
+      await API.graphql(graphqlOperation(mutations.updateVirtueRecord, { input }));
+    } else {
+      await API.graphql(graphqlOperation(mutations.createVirtueRecord, { input }));
+    }
+
+    return true;
   } catch (error) {
-    console.error("Error actualizando los registros de la virtud:", error.errors ? error.errors : error);
+    console.error("Error actualizando el registro de la virtud:", error);
     throw error;
   }
 };
 
-// Subir todas las virtudes locales a DynamoDB
-export const uploadVirtues = async () => {
+export const getTargetVirtueForWeek = (date) => {
+  const startOfYear = new Date(date.getFullYear(), 0, 1);
+  const weekNumber = Math.floor((date - startOfYear) / (7 * 24 * 60 * 60 * 1000));
+  return allVirtues[weekNumber % allVirtues.length].id;
+};
+
+export const getVirtuesWithRecords = async (startDate, endDate) => {
   try {
+    const virtuesWithRecords = [];
     for (const virtue of allVirtues) {
-      const response = await API.graphql(graphqlOperation(mutations.createVirtue, {
-        input: {
-          id: virtue.id,
-          name: virtue.name,
-          description: virtue.description,
-          weekRecords: {} // Inicializa weekRecords como un objeto vacío
-        }
-      }));
-      console.log(`Virtud subida: ${virtue.name}`, response);
+      const records = await getWeekRecords(virtue.id, startDate, endDate);
+      virtuesWithRecords.push({
+        ...virtue,
+        records: records
+      });
     }
+    return virtuesWithRecords;
   } catch (error) {
-    console.error('Error subiendo las virtudes:', error.errors ? error.errors : error);
+    console.error("Error al obtener las virtudes con registros:", error);
+    return [];
   }
+};
+
+export const getWeekNumber = (date) => {
+  const startOfYear = new Date(date.getFullYear(), 0, 1);
+  return Math.ceil((date - startOfYear) / (7 * 24 * 60 * 60 * 1000));
 };

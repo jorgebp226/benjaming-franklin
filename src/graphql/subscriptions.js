@@ -7,7 +7,10 @@ export const onCreateVirtue = /* GraphQL */ `
       id
       name
       description
-      weekRecords
+      records {
+        nextToken
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -20,7 +23,10 @@ export const onUpdateVirtue = /* GraphQL */ `
       id
       name
       description
-      weekRecords
+      records {
+        nextToken
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -33,9 +39,63 @@ export const onDeleteVirtue = /* GraphQL */ `
       id
       name
       description
-      weekRecords
+      records {
+        nextToken
+        __typename
+      }
       createdAt
       updatedAt
+      __typename
+    }
+  }
+`;
+export const onCreateVirtueRecord = /* GraphQL */ `
+  subscription OnCreateVirtueRecord(
+    $filter: ModelSubscriptionVirtueRecordFilterInput
+  ) {
+    onCreateVirtueRecord(filter: $filter) {
+      id
+      virtueId
+      date
+      status
+      targetVirtueId
+      createdAt
+      updatedAt
+      virtueRecordsId
+      __typename
+    }
+  }
+`;
+export const onUpdateVirtueRecord = /* GraphQL */ `
+  subscription OnUpdateVirtueRecord(
+    $filter: ModelSubscriptionVirtueRecordFilterInput
+  ) {
+    onUpdateVirtueRecord(filter: $filter) {
+      id
+      virtueId
+      date
+      status
+      targetVirtueId
+      createdAt
+      updatedAt
+      virtueRecordsId
+      __typename
+    }
+  }
+`;
+export const onDeleteVirtueRecord = /* GraphQL */ `
+  subscription OnDeleteVirtueRecord(
+    $filter: ModelSubscriptionVirtueRecordFilterInput
+  ) {
+    onDeleteVirtueRecord(filter: $filter) {
+      id
+      virtueId
+      date
+      status
+      targetVirtueId
+      createdAt
+      updatedAt
+      virtueRecordsId
       __typename
     }
   }

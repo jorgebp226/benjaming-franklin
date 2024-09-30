@@ -10,7 +10,10 @@ export const createVirtue = /* GraphQL */ `
       id
       name
       description
-      weekRecords
+      records {
+        nextToken
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -26,7 +29,10 @@ export const updateVirtue = /* GraphQL */ `
       id
       name
       description
-      weekRecords
+      records {
+        nextToken
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -42,9 +48,66 @@ export const deleteVirtue = /* GraphQL */ `
       id
       name
       description
-      weekRecords
+      records {
+        nextToken
+        __typename
+      }
       createdAt
       updatedAt
+      __typename
+    }
+  }
+`;
+export const createVirtueRecord = /* GraphQL */ `
+  mutation CreateVirtueRecord(
+    $input: CreateVirtueRecordInput!
+    $condition: ModelVirtueRecordConditionInput
+  ) {
+    createVirtueRecord(input: $input, condition: $condition) {
+      id
+      virtueId
+      date
+      status
+      targetVirtueId
+      createdAt
+      updatedAt
+      virtueRecordsId
+      __typename
+    }
+  }
+`;
+export const updateVirtueRecord = /* GraphQL */ `
+  mutation UpdateVirtueRecord(
+    $input: UpdateVirtueRecordInput!
+    $condition: ModelVirtueRecordConditionInput
+  ) {
+    updateVirtueRecord(input: $input, condition: $condition) {
+      id
+      virtueId
+      date
+      status
+      targetVirtueId
+      createdAt
+      updatedAt
+      virtueRecordsId
+      __typename
+    }
+  }
+`;
+export const deleteVirtueRecord = /* GraphQL */ `
+  mutation DeleteVirtueRecord(
+    $input: DeleteVirtueRecordInput!
+    $condition: ModelVirtueRecordConditionInput
+  ) {
+    deleteVirtueRecord(input: $input, condition: $condition) {
+      id
+      virtueId
+      date
+      status
+      targetVirtueId
+      createdAt
+      updatedAt
+      virtueRecordsId
       __typename
     }
   }

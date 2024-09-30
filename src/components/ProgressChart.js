@@ -1,9 +1,8 @@
-// src/components/ProgressChart.js
 import React, { useState, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { virtues as allVirtues } from '../utils/virtues';
-import { getVirtues } from '../api';
+import { getVirtuesWithRecords, getWeekNumber } from '../api';
 import './ProgressChart.css';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -16,11 +15,22 @@ const ProgressChart = () => {
 
   useEffect(() => {
     fetchRecords();
-  }, []);
+  }, [startWeek, endWeek]);
 
   const fetchRecords = async () => {
-    const data = await getVirtues();
+    const startDate = getDateFromWeekNumber(startWeek);
+    const endDate = getDateFromWeekNumber(endWeek, true);
+    const data = await getVirtuesWithRecords(startDate.toISOString().split('T')[0], endDate.toISOString().split('T')[0]);
     setRecords(data);
+  };
+
+  const getDateFromWeekNumber = (weekNumber, isEndOfWeek = false) => {
+    const currentYear = new Date().getFullYear();
+    const date = new Date(currentYear, 0, 1 + (weekNumber - 1) * 7);
+    if (isEndOfWeek) {
+      date.setDate(date.getDate() + 6);
+    }
+    return date;
   };
 
   const handleVirtueSelection = (virtueId) => {
@@ -39,23 +49,26 @@ const ProgressChart = () => {
     }
   };
 
+  const calculateWeeklySuccess = (virtueRecords, weekNumber) => {
+    const weekStart = getDateFromWeekNumber(weekNumber);
+    const weekEnd = getDateFromWeekNumber(weekNumber, true);
+    const weekRecords = virtueRecords.filter(record => {
+      const recordDate = new Date(record.date);
+      return recordDate >= weekStart && recordDate <= weekEnd;
+    });
+    const successCount = weekRecords.filter(record => record.status === true).length;
+    return (successCount / 7) * 100;
+  };
+
   // Preparar datos para el gráfico
   const chartData = {
     labels: Array.from({ length: endWeek - startWeek + 1 }, (_, i) => `Semana ${startWeek + i}`),
     datasets: selectedVirtues.map((virtueId) => {
       const virtue = allVirtues.find(v => v.id === virtueId);
-      const dataPoints = [];
-
-      for (let week = startWeek; week <= endWeek; week++) {
-        const virtueRecord = records.find(v => v.id === virtueId);
-        if (virtueRecord && virtueRecord.weekRecords) {
-          const successCount = Object.values(virtueRecord.weekRecords).filter(status => status === true).length;
-          const successPercentage = (successCount / 7) * 100;
-          dataPoints.push(successPercentage);
-        } else {
-          dataPoints.push(0);
-        }
-      }
+      const virtueRecords = records.find(r => r.id === virtueId)?.records || [];
+      const dataPoints = Array.from({ length: endWeek - startWeek + 1 }, (_, i) => {
+        return calculateWeeklySuccess(virtueRecords, startWeek + i);
+      });
 
       return {
         label: virtue.name,
@@ -128,7 +141,7 @@ const ProgressChart = () => {
             type="number"
             name="startWeek"
             min="1"
-            max="13"
+            max="52"
             value={startWeek}
             onChange={handleWeekChange}
           />
@@ -137,7 +150,7 @@ const ProgressChart = () => {
             type="number"
             name="endWeek"
             min="1"
-            max="13"
+            max="52"
             value={endWeek}
             onChange={handleWeekChange}
           />

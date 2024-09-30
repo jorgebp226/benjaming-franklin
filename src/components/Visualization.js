@@ -1,42 +1,35 @@
-// src/components/Visualization.js
 import React, { useState, useEffect } from 'react';
-import { virtues } from '../utils/virtues';
 import { Bar } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import { virtues as allVirtues } from '../utils/virtues';
+import { getVirtuesWithRecords } from '../api';
 import './Visualization.css';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const Visualization = () => {
-  const [records, setRecords] = useState({});
+  const [records, setRecords] = useState([]);
 
   useEffect(() => {
-    loadRecords();
+    fetchRecords();
   }, []);
 
-  const loadRecords = () => {
-    const savedRecords = localStorage.getItem('records');
-    if (savedRecords) {
-      setRecords(JSON.parse(savedRecords));
-    }
+  const fetchRecords = async () => {
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - 30); // Obtener datos de los últimos 30 días
+    const endDate = new Date();
+    const data = await getVirtuesWithRecords(startDate.toISOString().split('T')[0], endDate.toISOString().split('T')[0]);
+    setRecords(data);
   };
 
   const calculateStatistics = () => {
     const stats = {};
-    virtues.forEach((virtue) => {
+    records.forEach((virtue) => {
       let success = 0;
       let error = 0;
-      Object.values(records[virtue.id] || {}).forEach((status) => {
-        if (status === true) success += 1;
-        if (status === false) error += 1;
+      virtue.records.forEach((record) => {
+        if (record.status === true) success += 1;
+        if (record.status === false) error += 1;
       });
       const total = success + error;
       stats[virtue.name] = {
@@ -50,16 +43,16 @@ const Visualization = () => {
   const stats = calculateStatistics();
 
   const data = {
-    labels: virtues.map((v) => v.name),
+    labels: allVirtues.map((v) => v.name),
     datasets: [
       {
         label: 'Cumplido (%)',
-        data: virtues.map((v) => stats[v.name].success.toFixed(2)),
+        data: allVirtues.map((v) => stats[v.name]?.success.toFixed(2) || 0),
         backgroundColor: 'rgba(75, 192, 192, 0.6)',
       },
       {
         label: 'Errores (%)',
-        data: virtues.map((v) => stats[v.name].error.toFixed(2)),
+        data: allVirtues.map((v) => stats[v.name]?.error.toFixed(2) || 0),
         backgroundColor: 'rgba(255, 99, 132, 0.6)',
       },
     ],
@@ -73,7 +66,17 @@ const Visualization = () => {
       },
       title: {
         display: true,
-        text: 'Progreso de Virtudes',
+        text: 'Progreso de Virtudes (Últimos 30 días)',
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: 100,
+        title: {
+          display: true,
+          text: 'Porcentaje (%)',
+        },
       },
     },
   };
@@ -82,7 +85,6 @@ const Visualization = () => {
     <div className="visualization-container">
       <h2>Visualización de Progreso</h2>
       <Bar data={data} options={options} />
-      {/* Aquí puedes agregar más visualizaciones y estadísticas */}
     </div>
   );
 };
