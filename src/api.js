@@ -1,8 +1,21 @@
 import { GraphQLAPI as API, graphqlOperation } from '@aws-amplify/api-graphql';
-//import { API, graphqlOperation } from 'aws-amplify';
 import * as mutations from './graphql/mutations';
 import * as queries from './graphql/queries';
 import { virtues as allVirtues } from './utils/virtues';
+
+// Función que faltaba
+export const getVirtues = async () => {
+  try {
+    const response = await API.graphql(graphqlOperation(queries.listVirtues));
+    if (!response || !response.data || !response.data.listVirtues) {
+      throw new Error("No se recibieron datos de GraphQL.");
+    }
+    return response.data.listVirtues.items;
+  } catch (error) {
+    console.error("Error al obtener las virtudes:", error.message || error);
+    return [];
+  }
+};
 
 export const getWeekRecords = async (virtueId, startDate, endDate) => {
   try {
@@ -74,7 +87,6 @@ export const getWeekNumber = (date) => {
   const startOfYear = new Date(date.getFullYear(), 0, 1);
   return Math.ceil((date - startOfYear) / (7 * 24 * 60 * 60 * 1000));
 };
-
 
 export const uploadVirtues = async () => {
   try {
